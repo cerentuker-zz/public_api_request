@@ -7,13 +7,10 @@ FSJS project 5 - Public API Requests
 var NR_OF_USERS = 12;
 var reqUrl = 'https://randomuser.me/api/?results=' + NR_OF_USERS;
 
-
-
 $.ajax({
     url: reqUrl,
     dataType: 'json',
     success: function (data) {
-        console.log(data);
         displayResults(data.results);
     }
 });
@@ -70,15 +67,12 @@ function displayResults(users) {
 
     //click event for cards 
     $('.card').on('click', function (e) {
-        var a = e.target;
-        var c = $(a).parent().closest('div');
         //get index of clicked user
-        var index = 1;
+        var index = $(e.target).closest('.card').find('#user-index-hidden').first().text();
         displayUserDetails(users, index);
         $('.modal-close-btn').on('click', function (e) {
             $('.modal-container').remove();
         });
-        //console.log("clicked! " + e.target);
     });
     //click event for user detail close button 
     $('.modal-close-btn').on('click', function (e) {
@@ -92,6 +86,7 @@ function displayUserDetails(users, index) {
     var modalContainerDiv = document.createElement('div');
     modalContainerDiv.className = "modal-container";
 
+    //add the close button to the detail window
     var modalDiv = document.createElement('div');
     modalDiv.className = "modal";
     var modalCloseButton = document.createElement('button');
@@ -104,47 +99,57 @@ function displayUserDetails(users, index) {
     var modalInfoContainerDiv = document.createElement('div');
     modalInfoContainerDiv.className = "modal-info-container";
 
+    //display user picture
     var modalImg = document.createElement('img');
     modalImg.className = "modal-img";
     modalImg.setAttribute("alt", "profile picture");
     modalImg.src = users[index].picture.large;
     modalInfoContainerDiv.appendChild(modalImg);
 
+    //display user name
     var modalh3 = document.createElement('h3');
     modalh3.setAttribute("id", "name");
     modalh3.className = "modal-name cap";
     modalh3.innerText = users[index].name.first + " " + users[index].name.last;
     modalInfoContainerDiv.appendChild(modalh3);
 
+    //display user email
+    var emailp = document.createElement('p');
+    emailp.className = "modal-text";
+    emailp.innerText = users[index].email;
+    modalInfoContainerDiv.appendChild(emailp);
+
+    //display user location
+    var cityp = document.createElement('p');
+    cityp.className = "modal-text cap";
+    cityp.innerText = users[index].location.city + ', ' + users[index].location.state;
+    modalInfoContainerDiv.appendChild(cityp);
+
+    var hrElem = document.createElement('hr');
+    modalContainerDiv.appendChild(hrElem);
+
+    //display user phone
+    var cellp = document.createElement('p');
+    cellp.className = "modal-text";
+    cellp.innerText = users[index].cell;
+    modalInfoContainerDiv.appendChild(cellp);
+
+    //display user address
+    var addressp = document.createElement('p');
+    addressp.className = "modal-text";
+    addressp.innerText = users[index].location.street + ', ' + users[index].location.city + ' ' + users[index].location.state + ' ' + users[index].location.postcode;
+    modalInfoContainerDiv.appendChild(addressp);
+
+    //display user birthday
+    var bdayp = document.createElement('p');
+    bdayp.className = "modal-text";
+    var bdate = new Date(users[index].dob.date);
+    let formatted_date = bdate.getDate() + "/" + (bdate.getMonth() + 1) + "/" + bdate.getFullYear();
+
+    bdayp.innerText = "Birtday: " + formatted_date;
+    modalInfoContainerDiv.appendChild(bdayp);
+
     modalDiv.appendChild(modalInfoContainerDiv);
     modalContainerDiv.appendChild(modalDiv);
     document.body.appendChild(modalContainerDiv);
 }
-
-/**
- * <div class="modal-container">
-                <div class="modal">
-                    <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
-                    <div class="modal-info-container">
-                        <img class="modal-img" src="https://placehold.it/125x125" alt="profile picture">
-                        <h3 id="name" class="modal-name cap">name</h3>
-                        <p class="modal-text">email</p>
-                        <p class="modal-text cap">city</p>
-                        <hr>
-                        <p class="modal-text">(555) 555-5555</p>
-                        <p class="modal-text">123 Portland Ave., Portland, OR 97204</p>
-                        <p class="modal-text">Birthday: 10/21/2015</p>
-                    </div>
-                </div>
-
-                // IMPORTANT: Below is only for exceeds tasks
-                <div class="modal-btn-container">
-                    <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
-                    <button type="button" id="modal-next" class="modal-next btn">Next</button>
-                </div>
-            </div> */
-
-/*$(document.createElement('div'), {
-    text: 'Div text',
-    'class': 'card-img-container'
-}).appendTo('.gallery');*/
